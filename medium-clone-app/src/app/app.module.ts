@@ -9,7 +9,7 @@ import { StoreModule } from '@ngrx/store'
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, AuthModule,StoreModule.forRoot([]),StoreDevtoolsModule.instrument({
+  imports: [BrowserModule, AppRoutingModule, AuthModule,StoreModule.forRoot({}),StoreDevtoolsModule.instrument({
     maxAge: 25, // Retains last 25 states
     logOnly: !isDevMode(), // Restrict extension to log-only mode
     autoPause: true, // Pauses recording actions and state changes when the extension window is not open
