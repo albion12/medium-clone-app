@@ -18,7 +18,7 @@
                         <fieldset class="form-group">
                             <input type="password" formControlName="password" class="form-control form-control-lg" placeholder="Password"/>
                         </fieldset>
-                        <button class="btn btn-lg btn-primary pull-xs-right" type="submit">Sign Up!</button>
+                        <button class="btn btn-lg btn-primary pull-xs-right" type="submit" [disabled]="isSubmitting$ | async">Sign Up!</button>
                     </fieldset>
                 </form>
             </div>
