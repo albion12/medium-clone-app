@@ -4,7 +4,6 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import {AppRoutingModule} from './app-routing.module'
 import {AppComponent} from './app.component'
-import {AuthModule} from 'src/app/auth/auth.module'
 import { StoreModule } from '@ngrx/store'
 import { AuthService } from './auth/services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,7 +15,6 @@ import { EffectsModule } from '@ngrx/effects';
     BrowserModule,
     HttpClientModule, 
     AppRoutingModule, 
-    AuthModule,
     StoreModule.forRoot({}),  
     EffectsModule.forRoot([]),
     StoreDevtoolsModule.instrument({

@@ -1,45 +1,43 @@
-import {Component, OnInit} from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
-import { Store, select } from '@ngrx/store';
-import { registerAction } from '../../store/actions/register.action';
-import { Observable } from 'rxjs';
-import { isSubmittingSelector } from '../../store/selectors';
-import { AuthService } from '../../services/auth.service';
-import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
+import {CommonModule} from '@angular/common'
+import {Component} from '@angular/core'
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms'
+import {RouterLink} from '@angular/router'
+import {Store} from '@ngrx/store'
+import {combineLatest} from 'rxjs'
+import { BacknedErrorMessages } from 'src/app/shared/components/backendErrorMessages.component'
+import {authActions} from '../../store/actions'
+import {selectIsSubmitting, selectValidationErrors} from '../../store/reducers'
+import {RegisterRequestInterface} from '../../types/registerRequest.interface'
 
 @Component({
   selector: 'mc-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    CommonModule,
+    BacknedErrorMessages,
+  ],
 })
-export class RegisterComponent implements OnInit {
-    form:FormGroup
-    isSubmitting$ : Observable<boolean>
-    constructor(private fb:FormBuilder,private store:Store,private authService:AuthService){
+export class RegisterComponent {
+  form = this.fb.nonNullable.group({
+    username: ['', Validators.required],
+    email: ['', Validators.required],
+    password: ['', Validators.required],
+  })
+  data$ = combineLatest({
+    isSubmitting: this.store.select(selectIsSubmitting),
+    backendErrors: this.store.select(selectValidationErrors),
+  })
 
+  constructor(private fb: FormBuilder, private store: Store) {}
+
+  onSubmit() {
+    console.log('form', this.form.getRawValue())
+    const request: RegisterRequestInterface = {
+      user: this.form.getRawValue(),
     }
-    ngOnInit():void {
-        this.initializeForm()
-        this.initializeValues()
-        
-    }
-    initializeValues():void{
-        this.isSubmitting$=this.store.pipe(select(isSubmittingSelector))
-        console.log(this.isSubmitting$,'isSubtmitting');
-        
-    }
-    initializeForm():void {
-        this.form = this.fb.group({
-            username:['',Validators.required],
-            email:['',Validators.required],
-            password:['',Validators.required]
-        })
-    }
-    onSubmit():void{
-        this.store.dispatch(registerAction(this.form.value))
-        this.authService.register(this.form.value).subscribe((currentUser:CurrentUserInterface)=>{
-            console.log(currentUser,'currentuser');
-            
-        })
-    }
+    this.store.dispatch(authActions.register({request}))
+  }
 }
